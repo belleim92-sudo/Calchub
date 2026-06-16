@@ -1,0 +1,34 @@
+---
+// src/pages/terms.astro
+import Base from "../layouts/Base.astro";
+import { BRAND, SITE_URL, CONTACT_EMAIL } from "../consts";
+const updated = "June 2026";
+---
+
+<Base
+  title={`Terms of Use — ${BRAND}`}
+  description={`The terms that apply when you use ${BRAND}.`}
+  path="/terms"
+>
+  <section class="content prose">
+    <h1>Terms of Use</h1>
+    <p><em>Last updated: {updated}</em></p>
+
+    <p>By using {SITE_URL} ("the Service") you agree to these Terms of Use. If you do not agree, please do not use the Service.</p>
+
+    <h2>Use of the Service</h2>
+    <p>{BRAND} provides free, browser-based file tools. You may use them for lawful personal or commercial purposes. You are responsible for the files you process and for ensuring you have the right to use them.</p>
+
+    <h2>No warranty</h2>
+    <p>The Service is provided "as is" and "as available", without warranties of any kind, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, or that conversions will meet your specific requirements. Always keep a copy of your original files.</p>
+
+    <h2>Limitation of liability</h2>
+    <p>To the maximum extent permitted by law, {BRAND} shall not be liable for any indirect, incidental or consequential damages, or any loss of data, arising from your use of the Service.</p>
+
+    <h2>Changes</h2>
+    <p>We may update these Terms from time to time. Continued use of the Service after changes means you accept the updated Terms.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these Terms? Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+  </section>
+</Base>

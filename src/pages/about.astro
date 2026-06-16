@@ -1,0 +1,26 @@
+---
+// src/pages/about.astro
+import Base from "../layouts/Base.astro";
+import { BRAND, CONTACT_EMAIL } from "../consts";
+---
+
+<Base
+  title={`About — ${BRAND}`}
+  description={`${BRAND} builds free, privacy-first file tools that run entirely in your browser.`}
+  path="/about"
+>
+  <section class="content prose">
+    <h1>About {BRAND}</h1>
+
+    <p>{BRAND} is a small project with a simple goal: make everyday file tasks — converting, combining, compressing — fast, free and private.</p>
+
+    <h2>Privacy by design</h2>
+    <p>Most online converters work by uploading your files to a server, processing them there, and sending them back. That is slow and means your documents pass through someone else's computer. We took a different approach: our tools run entirely in your browser using modern web technology. Your files are processed on your own device and never leave it. Nothing is uploaded, nothing is stored.</p>
+
+    <h2>What we believe</h2>
+    <p>Simple tools should be free, should not require an account, and should not bury you in watermarks or ads-before-you-can-click. We keep the tools clean and the experience fast, on any device.</p>
+
+    <h2>Get in touch</h2>
+    <p>Have feedback or a tool you'd like us to build? Email us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> — we read every message.</p>
+  </section>
+</Base>

@@ -1,17 +1,37 @@
 ---
+// src/pages/index.astro
+import Base from "../layouts/Base.astro";
+import { BRAND } from "../consts";
 
+const tools = [
+  { href: "/png-to-pdf", t: "PNG to PDF", d: "Convert and combine PNG images into one PDF." },
+  { href: "/jpg-to-pdf", t: "JPG to PDF", d: "Turn JPG photos into a single PDF document." },
+  { href: "/pdf-to-png", t: "PDF to PNG", d: "Export each PDF page as a PNG image." },
+  { href: "/heic-to-jpg", t: "HEIC to JPG", d: "Convert iPhone HEIC photos to standard JPG." },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base
+  title={`${BRAND} — Free, Private File Conversion Tools`}
+  description="Fast, free file tools that run entirely in your browser. Convert PNG to PDF, JPG to PDF and more. No upload, no sign-up — your files never leave your device."
+  path="/"
+>
+  <section class="hero">
+    <h1>Free, private file tools</h1>
+    <p class="sub">Convert and combine your files in seconds — right in your browser. No upload, no sign-up, nothing leaves your device.</p>
+  </section>
+
+  <div class="tools-grid">
+    {tools.map((tool) => (
+      <a class="tool-card" href={tool.href}>
+        <h3>{tool.t}</h3>
+        <p>{tool.d}</p>
+      </a>
+    ))}
+  </div>
+
+  <section class="content">
+    <h2>Why {BRAND}?</h2>
+    <p>Most online converters upload your files to their servers. We don't. Every conversion on {BRAND} runs locally inside your web browser, so your documents and photos never leave your device. That makes our tools faster, more private, and safe to use even with sensitive files. They are completely free, work on any device, and never add watermarks.</p>
+  </section>
+</Base>

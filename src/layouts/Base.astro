@@ -1,0 +1,246 @@
+---
+// src/layouts/Base.astro
+import { SITE_URL, BRAND, OG_IMAGE, ADSENSE_PUBLISHER_ID } from "../consts";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;     // e.g. "/png-to-pdf"
+  image?: string;
+}
+const { title, description, path = "/", image = OG_IMAGE } = Astro.props;
+const canonical = SITE_URL + path;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#6d28d9" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={BRAND} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <!-- Google Consent Mode v2: deny by default until the user accepts (EEA-safe) -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500
+      });
+      try {
+        if (localStorage.getItem('cookie-consent') === 'granted') {
+          gtag('consent', 'update', {
+            ad_storage: 'granted',
+            ad_user_data: 'granted',
+            ad_personalization: 'granted',
+            analytics_storage: 'granted'
+          });
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- Google AdSense — stays inactive until you set ADSENSE_PUBLISHER_ID in consts.ts -->
+    {ADSENSE_PUBLISHER_ID && (
+      <script
+        is:inline
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUBLISHER_ID}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
+
+    <!-- page-specific structured data goes here -->
+    <slot name="head" />
+  </head>
+
+  <body>
+    <header class="site-header">
+      <a href="/" class="brand"><span class="logo" aria-hidden="true"></span>{BRAND}</a>
+      <nav class="topnav">
+        <a href="/png-to-pdf">PNG to PDF</a>
+        <a href="/jpg-to-pdf">JPG to PDF</a>
+        <a href="/pdf-to-png">PDF to PNG</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="ft-cols">
+        <div>
+          <p class="ft-title">Tools</p>
+          <a href="/png-to-pdf">PNG to PDF</a>
+          <a href="/jpg-to-pdf">JPG to PDF</a>
+          <a href="/pdf-to-png">PDF to PNG</a>
+          <a href="/heic-to-jpg">HEIC to JPG</a>
+        </div>
+        <div>
+          <p class="ft-title">Company</p>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/terms">Terms of Use</a>
+        </div>
+      </div>
+      <p class="copy">© {year} {BRAND}. All file processing happens in your browser.</p>
+    </footer>
+
+    <!-- Cookie consent banner -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+      <p>
+        We use cookies for basic analytics and, only with your permission, to
+        show personalized ads. Read our <a href="/privacy-policy">Privacy Policy</a>.
+      </p>
+      <div class="cb-actions">
+        <button id="cb-reject" class="cb-btn ghost" type="button">Reject non-essential</button>
+        <button id="cb-accept" class="cb-btn primary" type="button">Accept all</button>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var banner = document.getElementById('cookie-banner');
+        var saved = null;
+        try { saved = localStorage.getItem('cookie-consent'); } catch (e) {}
+        if (!saved) banner.hidden = false;
+
+        function grant() {
+          try { localStorage.setItem('cookie-consent', 'granted'); } catch (e) {}
+          if (typeof gtag === 'function') {
+            gtag('consent', 'update', {
+              ad_storage: 'granted', ad_user_data: 'granted',
+              ad_personalization: 'granted', analytics_storage: 'granted'
+            });
+          }
+          banner.hidden = true;
+        }
+        function deny() {
+          try { localStorage.setItem('cookie-consent', 'denied'); } catch (e) {}
+          banner.hidden = true;
+        }
+        document.getElementById('cb-accept').addEventListener('click', grant);
+        document.getElementById('cb-reject').addEventListener('click', deny);
+      })();
+    </script>
+
+    <style is:global>
+      :root {
+        --accent: #6d28d9; --accent-2: #8b5cf6; --ink: #16182b; --muted: #6b7088;
+        --bg: #ffffff; --soft: #f6f3ff; --line: #e9e6f2; --radius: 16px;
+        --shadow: 0 10px 40px -12px rgba(80, 40, 160, .25);
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--ink);
+        background: radial-gradient(1100px 500px at 50% -200px, var(--soft), transparent 70%), var(--bg);
+        line-height: 1.65; -webkit-font-smoothing: antialiased;
+      }
+      main { max-width: 760px; margin: 0 auto; padding: 0 1.25rem; }
+      h1, h2, h3 { letter-spacing: -0.02em; line-height: 1.2; }
+      a { color: var(--accent); }
+
+      .site-header { display: flex; align-items: center; justify-content: space-between; max-width: 980px; margin: 0 auto; padding: 1.1rem 1.25rem; }
+      .brand { display: flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+      .logo { width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow); }
+      .topnav { display: flex; gap: 1.1rem; }
+      .topnav a { color: var(--muted); text-decoration: none; font-size: .92rem; font-weight: 600; }
+      .topnav a:hover { color: var(--accent); }
+
+      .hero { text-align: center; padding: 1.5rem 0 1rem; }
+      .breadcrumb { font-size: .82rem; color: var(--muted); margin-bottom: 1rem; }
+      .breadcrumb a { color: var(--muted); text-decoration: none; }
+      .breadcrumb span { margin: 0 .15rem; }
+      h1 { font-size: clamp(2rem, 6vw, 2.8rem); margin: 0 0 .6rem; }
+      .sub { color: var(--muted); font-size: 1.12rem; max-width: 560px; margin: 0 auto 1.2rem; }
+      .trust { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem .9rem; justify-content: center; padding: 0; margin: 0 0 1.8rem; font-size: .88rem; color: var(--ink); font-weight: 600; }
+      .trust li { background: #fff; border: 1px solid var(--line); padding: .35rem .8rem; border-radius: 999px; }
+
+      .btn-primary { width: 100%; border: none; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); padding: .9rem 1.6rem; border-radius: 11px; font-size: 1.08rem; font-weight: 800; box-shadow: var(--shadow); transition: .15s; }
+      .btn-primary:hover { filter: brightness(1.07); transform: translateY(-1px); }
+      .btn-secondary { background: #fff; border: 1px solid var(--accent); color: var(--accent); padding: .6rem 1.3rem; border-radius: 9px; font-weight: 700; cursor: pointer; font-size: .95rem; transition: .15s; }
+      .btn-secondary:hover { background: var(--soft); }
+
+      .content { margin: 2.6rem auto; }
+      .content h2 { font-size: 1.5rem; margin: 0 0 .8rem; }
+      .content p { color: #3a3d52; }
+      .prose p, .prose li { color: #3a3d52; }
+      .prose h2 { font-size: 1.35rem; margin: 1.8rem 0 .6rem; }
+      .prose a { color: var(--accent); }
+      .steps { padding-left: 1.2rem; }
+      .steps li { margin-bottom: .6rem; }
+
+      .features { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.6rem; margin: 3rem 0; }
+      .feature { display: flex; gap: .7rem; align-items: flex-start; }
+      .feature .dot { flex: none; width: 12px; height: 12px; margin-top: .45rem; border-radius: 4px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+      .feature h3 { font-size: 1rem; margin: 0 0 .1rem; }
+      .feature p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+      .faqs { border-top: 1px solid var(--line); }
+      details { border-bottom: 1px solid var(--line); padding: .9rem 0; }
+      summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+      summary::after { content: "+"; color: var(--accent); font-weight: 800; }
+      details[open] summary::after { content: "–"; }
+      details p { margin: .6rem 0 0; color: var(--muted); }
+
+      .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+      .tool-card { display: block; padding: 1.2rem; border: 1px solid var(--line); border-radius: 14px; text-decoration: none; color: var(--ink); background: #fff; transition: .15s; }
+      .tool-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+      .tool-card h3 { margin: 0 0 .25rem; font-size: 1.05rem; }
+      .tool-card p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+      /* Reserved ad slot — fixed height avoids layout shift (good for Core Web Vitals) */
+      .ad-slot { min-height: 100px; margin: 2rem 0; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--line); border-radius: 12px; color: #b9b6c8; font-size: .8rem; }
+
+      .footer { max-width: 980px; margin: 4rem auto 0; padding: 2.2rem 1.25rem 3rem; border-top: 1px solid var(--line); color: var(--muted); }
+      .ft-cols { display: flex; gap: 3rem; flex-wrap: wrap; }
+      .ft-title { font-weight: 700; color: var(--ink); margin: 0 0 .5rem; }
+      .footer a { display: block; color: var(--muted); text-decoration: none; font-size: .9rem; padding: .15rem 0; }
+      .footer a:hover { color: var(--accent); }
+      .copy { font-size: .82rem; margin-top: 1.6rem; }
+
+      .cookie-banner {
+        position: fixed; left: 1rem; right: 1rem; bottom: 1rem; max-width: 760px;
+        margin: 0 auto; background: #fff; border: 1px solid var(--line);
+        border-radius: 14px; box-shadow: 0 20px 50px -10px rgba(20,10,60,.3);
+        padding: 1rem 1.2rem; display: flex; gap: 1rem; align-items: center;
+        flex-wrap: wrap; justify-content: space-between; z-index: 9999;
+      }
+      .cookie-banner p { margin: 0; font-size: .88rem; color: var(--ink); flex: 1 1 300px; }
+      .cb-actions { display: flex; gap: .6rem; }
+      .cb-btn { border-radius: 9px; padding: .55rem 1rem; font-weight: 700; font-size: .85rem; cursor: pointer; border: 1px solid var(--line); }
+      .cb-btn.ghost { background: #fff; color: var(--muted); }
+      .cb-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border: none; }
+
+      @media (max-width: 560px) {
+        .features, .tools-grid { grid-template-columns: 1fr; }
+        .topnav { display: none; }
+      }
+    </style>
+  </body>
+</html>

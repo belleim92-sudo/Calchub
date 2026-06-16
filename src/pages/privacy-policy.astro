@@ -1,0 +1,47 @@
+---
+// src/pages/privacy-policy.astro
+import Base from "../layouts/Base.astro";
+import { BRAND, SITE_URL, CONTACT_EMAIL } from "../consts";
+const updated = "June 2026"; // ← update when you change this policy
+---
+
+<Base
+  title={`Privacy Policy — ${BRAND}`}
+  description={`How ${BRAND} handles data, cookies and advertising. Your files are processed in your browser and never uploaded.`}
+  path="/privacy-policy"
+>
+  <section class="content prose">
+    <h1>Privacy Policy</h1>
+    <p><em>Last updated: {updated}</em></p>
+
+    <p>This Privacy Policy explains how {BRAND} ("we", "us") handles information when you use our website at {SITE_URL} and its tools.</p>
+
+    <h2>Your files are not uploaded</h2>
+    <p>Our conversion tools run entirely inside your web browser. The files you convert are processed locally on your own device and are <strong>never uploaded to, stored on, or transmitted to our servers</strong>. We never see them.</p>
+
+    <h2>Information we collect</h2>
+    <p>We collect very little. We do not require an account. We may process: (1) basic, aggregated analytics about how the site is used (such as pages visited and approximate region), and (2) any information you voluntarily send us, for example when you email us for support.</p>
+
+    <h2>Cookies and similar technologies</h2>
+    <p>We use cookies and similar technologies for essential site functionality, for basic analytics, and — only with your consent — for advertising. You can accept or reject non-essential cookies using the consent banner shown on your first visit, and you can change your choice at any time by clearing your browser storage for this site.</p>
+
+    <h2>Advertising</h2>
+    <p>We may display ads served by Google AdSense. Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this and other websites. Google's use of advertising cookies enables it and its partners to serve ads to you based on your visits to our site and/or other sites on the Internet.</p>
+    <p>You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" rel="nofollow noopener" target="_blank">Google Ads Settings</a>, or opt out of some third-party vendors' use of cookies for personalized advertising at <a href="https://www.aboutads.info/choices/" rel="nofollow noopener" target="_blank">aboutads.info</a>. For visitors in the EEA, UK and Switzerland, we request consent before personalized ads are shown, in line with applicable law.</p>
+
+    <h2>Analytics</h2>
+    <p>We may use a privacy-friendly analytics tool to understand aggregate traffic. This data is not used to personally identify you.</p>
+
+    <h2>Your rights</h2>
+    <p>Depending on where you live (for example, under the GDPR in the EEA or the UK GDPR), you may have the right to access, correct or delete personal data we hold about you, to object to or restrict its processing, and to withdraw consent at any time. To exercise these rights, contact us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+
+    <h2>Children</h2>
+    <p>Our site is not directed at children under 13, and we do not knowingly collect personal data from them.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>We may update this Privacy Policy from time to time. The "Last updated" date above reflects the latest version.</p>
+
+    <h2>Contact</h2>
+    <p>For any questions about this policy, email us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+  </section>
+</Base>

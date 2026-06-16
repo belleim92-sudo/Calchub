@@ -1,0 +1,18 @@
+---
+// src/pages/contact.astro
+import Base from "../layouts/Base.astro";
+import { BRAND, CONTACT_EMAIL } from "../consts";
+---
+
+<Base
+  title={`Contact — ${BRAND}`}
+  description={`Get in touch with the ${BRAND} team.`}
+  path="/contact"
+>
+  <section class="content prose">
+    <h1>Contact us</h1>
+    <p>We'd love to hear from you — whether it's feedback, a bug report, or a suggestion for a new tool.</p>
+    <p>Email us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and we'll get back to you, usually within a couple of business days.</p>
+    <p>For privacy-related requests, please see our <a href="/privacy-policy">Privacy Policy</a>.</p>
+  </section>
+</Base>
