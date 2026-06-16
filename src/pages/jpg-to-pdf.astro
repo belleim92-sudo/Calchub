@@ -1,0 +1,188 @@
+---
+// src/pages/jpg-to-pdf.astro
+import Base from "../layouts/Base.astro";
+import { SITE_URL } from "../consts";
+
+const PATH = "/jpg-to-pdf";
+const PAGE_URL = SITE_URL + PATH;
+
+const faqs = [
+  { q: "Is this JPG to PDF converter free?", a: "Yes. It is completely free, with no sign-up, no watermark and no limit on how many images you convert." },
+  { q: "Are my files private?", a: "Completely. The conversion runs entirely in your browser, so your JPG images are never uploaded to any server. They never leave your device." },
+  { q: "Can I combine multiple JPG images into one PDF?", a: "Yes. Add as many JPG or JPEG images as you want, drag them into the order you like, and they are merged into a single PDF — one image per page." },
+  { q: "Does converting JPG to PDF reduce quality?", a: "No. Each image is placed into the PDF at its original resolution, so there is no loss of quality." },
+  { q: "How do I convert a JPG to PDF on iPhone or Android?", a: "Open this page in any mobile browser, tap “Choose files”, select your photos and tap Convert to PDF. The PDF downloads to your device." },
+  { q: "Which formats does it accept?", a: "JPG and JPEG, plus PNG and WEBP — all can be combined into one PDF." },
+];
+
+const steps = [
+  { name: "Add your JPG images", text: "Drag and drop your JPG files into the box, or click “Choose files” to pick them from your device." },
+  { name: "Arrange and set options", text: "Drag the thumbnails to reorder the pages, then choose page size, orientation and margin." },
+  { name: "Convert and download", text: "Click “Convert to PDF” and your images are combined into a single PDF that downloads instantly." },
+];
+
+const features = [
+  { t: "Combine into one PDF", d: "Merge multiple JPG images into a single, ordered PDF document." },
+  { t: "100% private", d: "Files are processed in your browser and never uploaded anywhere." },
+  { t: "No quality loss", d: "Photos are embedded at full resolution — your PDF stays sharp." },
+  { t: "Free, no sign-up", d: "No account, no watermark, no limits. Just convert and download." },
+  { t: "Works everywhere", d: "Any browser on desktop, Android or iPhone. Nothing to install." },
+  { t: "Instant", d: "Conversion happens locally, so there is no upload wait." },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebApplication", name: "JPG to PDF Converter", url: PAGE_URL, applicationCategory: "UtilitiesApplication", operatingSystem: "Any (web-based)", description: "Free online tool to convert JPG to PDF and combine multiple JPG images into one PDF, directly in your browser.", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
+    { "@type": "HowTo", name: "How to convert JPG to PDF", step: steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.name, text: s.text })) },
+    { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
+    { "@type": "BreadcrumbList", itemListElement: [ { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL }, { "@type": "ListItem", position: 2, name: "JPG to PDF", item: PAGE_URL } ] },
+  ],
+};
+---
+
+<Base
+  title="JPG to PDF — Free Converter, Combine Images Into One PDF"
+  description="Convert JPG to PDF free and combine multiple JPG images into a single PDF — right in your browser. No upload, no sign-up, no watermark, no quality loss."
+  path={PATH}
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="hero">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span>/</span> <span>JPG to PDF</span></nav>
+    <h1>JPG to PDF Converter</h1>
+    <p class="sub">Convert JPG to PDF and combine multiple images into a single PDF — free, instant and right in your browser.</p>
+    <ul class="trust">
+      <li>✓ Free, no sign-up</li>
+      <li>✓ No watermark</li>
+      <li>✓ No quality loss</li>
+      <li>🔒 Files never leave your device</li>
+    </ul>
+
+    <div class="card">
+      <div id="dropzone" class="dropzone">
+        <svg class="up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M12 16V4m0 0L7 9m5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" stroke-linecap="round"/>
+        </svg>
+        <p class="dz-title">Drag &amp; drop your JPG images here</p>
+        <p class="muted">JPG, JPEG, PNG or WEBP — or</p>
+        <button id="pickBtn" type="button" class="btn-secondary">Choose files</button>
+        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
+      </div>
+      <div id="bar" class="bar" hidden>
+        <span id="count" class="count"></span>
+        <button id="clearBtn" type="button" class="link">Clear all</button>
+      </div>
+      <div id="thumbs" class="thumbs"></div>
+      <div id="options" class="options" hidden>
+        <label>Page size
+          <select id="pageSize"><option value="a4">A4</option><option value="letter">US Letter</option><option value="fit">Fit to image</option></select>
+        </label>
+        <label>Orientation
+          <select id="orientation"><option value="auto">Auto</option><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
+        </label>
+        <label>Margin
+          <select id="margin"><option value="0">None</option><option value="10">Small</option><option value="20">Large</option></select>
+        </label>
+      </div>
+      <button id="convertBtn" type="button" class="btn-primary" hidden>Convert to PDF</button>
+      <p id="status" class="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="features">
+    {features.map((f) => (<div class="feature"><span class="dot" aria-hidden="true"></span><div><h3>{f.t}</h3><p>{f.d}</p></div></div>))}
+  </section>
+
+  <div class="ad-slot">Ad space</div>
+
+  <section class="content">
+    <h2>How to convert JPG to PDF</h2>
+    <ol class="steps">{steps.map((s) => (<li><strong>{s.name}.</strong> {s.text}</li>))}</ol>
+  </section>
+
+  <section class="content">
+    <h2>Combine multiple JPG images into one PDF</h2>
+    <p>Got a stack of photos or scanned pages? This tool turns several JPG images into one tidy PDF. Drop your files in, drag the thumbnails into the right order, and convert — each JPEG becomes its own page, so you get a single, shareable PDF in one click. It also accepts PNG and WEBP, so you can change any mix of images to PDF without converting them one by one.</p>
+  </section>
+
+  <section class="content">
+    <h2>Frequently asked questions</h2>
+    <div class="faqs">{faqs.map((f) => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}</div>
+  </section>
+
+  <script>
+    import { jsPDF } from "jspdf";
+    const files = []; let dragSrc = null;
+    const $ = (id) => document.getElementById(id);
+    const dropzone = $("dropzone"), fileInput = $("fileInput"), thumbs = $("thumbs");
+    const options = $("options"), convertBtn = $("convertBtn"), status = $("status"), bar = $("bar"), count = $("count");
+    $("pickBtn").addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => addFiles(e.target.files));
+    $("clearBtn").addEventListener("click", () => { files.length = 0; render(); });
+    ["dragenter","dragover"].forEach((ev) => dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add("over"); }));
+    ["dragleave","drop"].forEach((ev) => dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.remove("over"); }));
+    dropzone.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+    function addFiles(fileList) {
+      [...fileList].filter((f) => f.type.startsWith("image/")).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => { const img = new Image(); img.onload = () => { files.push({ id: crypto.randomUUID(), dataUrl: ev.target.result, w: img.naturalWidth, h: img.naturalHeight }); render(); }; img.src = ev.target.result; };
+        reader.readAsDataURL(file);
+      });
+    }
+    function render() {
+      thumbs.innerHTML = "";
+      files.forEach((f, i) => {
+        const card = document.createElement("div"); card.className = "thumb"; card.draggable = true; card.dataset.id = f.id;
+        card.innerHTML = '<img src="' + f.dataUrl + '" alt="" /><span class="num">' + (i + 1) + '</span><button class="remove" aria-label="Remove image">×</button>';
+        card.querySelector(".remove").addEventListener("click", () => { files.splice(files.findIndex((x) => x.id === f.id), 1); render(); });
+        card.addEventListener("dragstart", () => (dragSrc = f.id));
+        card.addEventListener("dragover", (e) => e.preventDefault());
+        card.addEventListener("drop", (e) => { e.preventDefault(); const from = files.findIndex((x) => x.id === dragSrc), to = files.findIndex((x) => x.id === f.id); if (from === -1 || to === -1 || from === to) return; const [m] = files.splice(from, 1); files.splice(to, 0, m); render(); });
+        thumbs.appendChild(card);
+      });
+      const has = files.length > 0; options.hidden = !has; convertBtn.hidden = !has; bar.hidden = !has;
+      count.textContent = files.length + (files.length === 1 ? " image" : " images") + " ready"; status.textContent = "";
+    }
+    convertBtn.addEventListener("click", () => {
+      if (!files.length) return; status.textContent = "Generating PDF…";
+      const sizeChoice = $("pageSize").value, orientChoice = $("orientation").value, marginMm = Number($("margin").value);
+      const PX_TO_MM = 25.4 / 96; let doc;
+      files.forEach((f, i) => {
+        const imgWmm = f.w * PX_TO_MM, imgHmm = f.h * PX_TO_MM;
+        let orientation = orientChoice === "auto" ? (f.w >= f.h ? "landscape" : "portrait") : orientChoice;
+        let format; if (sizeChoice === "a4") format = "a4"; else if (sizeChoice === "letter") format = "letter"; else format = [imgWmm + marginMm * 2, imgHmm + marginMm * 2];
+        if (i === 0) doc = new jsPDF({ orientation, unit: "mm", format }); else doc.addPage(format, orientation);
+        const pageW = doc.internal.pageSize.getWidth(), pageH = doc.internal.pageSize.getHeight();
+        const availW = pageW - marginMm * 2, availH = pageH - marginMm * 2;
+        const ratio = Math.min(availW / imgWmm, availH / imgHmm);
+        const drawW = imgWmm * ratio, drawH = imgHmm * ratio, x = (pageW - drawW) / 2, y = (pageH - drawH) / 2;
+        doc.addImage(f.dataUrl, f.dataUrl.includes("image/png") ? "PNG" : "JPEG", x, y, drawW, drawH);
+      });
+      doc.save("converted.pdf"); status.textContent = "✓ Done — your PDF has been downloaded.";
+    });
+  </script>
+
+  <style>
+    .card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; text-align: left; }
+    .dropzone { border: 2px dashed #d6cdf0; border-radius: 14px; padding: 2.4rem 1rem; text-align: center; transition: .18s; background: linear-gradient(#fff, #fdfcff); }
+    .dropzone.over { border-color: var(--accent); background: var(--soft); transform: scale(1.005); }
+    .dropzone .up { width: 42px; height: 42px; color: var(--accent); margin-bottom: .4rem; }
+    .dz-title { font-weight: 700; font-size: 1.05rem; margin: 0; }
+    .dropzone .muted { color: var(--muted); margin: .35rem 0 .8rem; font-size: .92rem; }
+    .bar { display: flex; align-items: center; justify-content: space-between; margin: 1.1rem 0 .25rem; }
+    .count { font-weight: 700; font-size: .9rem; }
+    .link { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .85rem; text-decoration: underline; }
+    .link:hover { color: var(--accent); }
+    .thumbs { display: flex; flex-wrap: wrap; gap: .7rem; margin: .6rem 0; }
+    .thumb { position: relative; width: 92px; height: 92px; border-radius: 11px; overflow: hidden; border: 1px solid var(--line); cursor: grab; background: #fafafa; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .thumb .num { position: absolute; left: 5px; top: 5px; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 800; padding: 1px 7px; border-radius: 7px; }
+    .thumb .remove { position: absolute; right: 5px; top: 5px; width: 22px; height: 22px; border: none; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; font-size: 1rem; line-height: 1; cursor: pointer; }
+    .options { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.1rem 0; }
+    .options label { display: flex; flex-direction: column; gap: .3rem; font-size: .8rem; font-weight: 700; color: var(--muted); }
+    .options select { padding: .5rem .65rem; border: 1px solid var(--line); border-radius: 9px; font-size: .95rem; background: #fff; color: var(--ink); }
+    .status { text-align: center; color: var(--muted); min-height: 1.3em; margin: .8rem 0 0; font-size: .92rem; }
+  </style>
+</Base>

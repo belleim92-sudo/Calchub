@@ -1,0 +1,178 @@
+---
+// src/pages/pdf-to-png.astro
+import Base from "../layouts/Base.astro";
+import { SITE_URL } from "../consts";
+
+const PATH = "/pdf-to-png";
+const PAGE_URL = SITE_URL + PATH;
+
+const faqs = [
+  { q: "Is this PDF to PNG converter free?", a: "Yes. It is completely free, with no sign-up, no watermark and no page limit." },
+  { q: "Are my files private?", a: "Completely. Your PDF is rendered entirely inside your browser and is never uploaded to any server. It never leaves your device." },
+  { q: "Does it convert every page?", a: "Yes. Each page of your PDF is turned into its own high-resolution PNG image, which you can download individually or all at once." },
+  { q: "What resolution are the PNG images?", a: "Pages are rendered at 2x scale for crisp, high-quality PNGs suitable for printing or editing." },
+  { q: "Can I convert a PDF to images on my phone?", a: "Yes. Open this page in any mobile browser, choose your PDF, and the PNG images are generated on your device." },
+  { q: "How is this different from PDF to image?", a: "PNG is a lossless image format, so it keeps text and lines sharp. This tool exports each PDF page as a PNG image." },
+];
+
+const steps = [
+  { name: "Add your PDF", text: "Drag and drop your PDF into the box, or click “Choose file” to select it from your device." },
+  { name: "Let it render", text: "Each page is rendered to a high-resolution PNG right in your browser — no upload." },
+  { name: "Download your PNGs", text: "Download each page individually, or click “Download all” to save every page at once." },
+];
+
+const features = [
+  { t: "Every page exported", d: "Turns each PDF page into its own high-resolution PNG image." },
+  { t: "100% private", d: "Your PDF is rendered in your browser and never uploaded anywhere." },
+  { t: "High resolution", d: "Pages render at 2x scale for crisp, print-ready PNGs." },
+  { t: "Free, no sign-up", d: "No account, no watermark, no page limits." },
+  { t: "Works everywhere", d: "Any browser on desktop, Android or iPhone. Nothing to install." },
+  { t: "Download all", d: "Grab every page at once or pick the ones you need." },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebApplication", name: "PDF to PNG Converter", url: PAGE_URL, applicationCategory: "UtilitiesApplication", operatingSystem: "Any (web-based)", description: "Free online tool to convert PDF to PNG. Export every page of a PDF as a high-resolution PNG image, directly in your browser.", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
+    { "@type": "HowTo", name: "How to convert PDF to PNG", step: steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.name, text: s.text })) },
+    { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
+    { "@type": "BreadcrumbList", itemListElement: [ { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL }, { "@type": "ListItem", position: 2, name: "PDF to PNG", item: PAGE_URL } ] },
+  ],
+};
+---
+
+<Base
+  title="PDF to PNG — Free Converter, Export Every Page as PNG"
+  description="Convert PDF to PNG free. Turn every page of your PDF into a high-resolution PNG image, right in your browser. No upload, no sign-up, no watermark."
+  path={PATH}
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="hero">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> <span>/</span> <span>PDF to PNG</span></nav>
+    <h1>PDF to PNG Converter</h1>
+    <p class="sub">Convert a PDF to PNG images — every page exported in high resolution, free and right in your browser.</p>
+    <ul class="trust">
+      <li>✓ Free, no sign-up</li>
+      <li>✓ High resolution</li>
+      <li>✓ No watermark</li>
+      <li>🔒 Files never leave your device</li>
+    </ul>
+
+    <div class="card">
+      <div id="dropzone" class="dropzone">
+        <svg class="up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M12 16V4m0 0L7 9m5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" stroke-linecap="round"/>
+        </svg>
+        <p class="dz-title">Drag &amp; drop your PDF here</p>
+        <p class="muted">or</p>
+        <button id="pickBtn" type="button" class="btn-secondary">Choose file</button>
+        <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden />
+      </div>
+      <p id="status" class="status" aria-live="polite"></p>
+      <div id="bar" class="bar" hidden>
+        <span id="count" class="count"></span>
+        <button id="downloadAll" type="button" class="btn-secondary">Download all</button>
+      </div>
+      <div id="pages" class="thumbs"></div>
+    </div>
+  </section>
+
+  <section class="features">
+    {features.map((f) => (<div class="feature"><span class="dot" aria-hidden="true"></span><div><h3>{f.t}</h3><p>{f.d}</p></div></div>))}
+  </section>
+
+  <div class="ad-slot">Ad space</div>
+
+  <section class="content">
+    <h2>How to convert PDF to PNG</h2>
+    <ol class="steps">{steps.map((s) => (<li><strong>{s.name}.</strong> {s.text}</li>))}</ol>
+  </section>
+
+  <section class="content">
+    <h2>Turn a PDF into images, page by page</h2>
+    <p>Need to pull images out of a PDF, or convert a PDF to image files you can edit or post? This PDF to PNG converter renders every page as a separate, high-resolution PNG — lossless, so text and lines stay sharp. Everything runs in your browser, so even sensitive documents never get uploaded. Download the pages one by one, or grab them all at once.</p>
+  </section>
+
+  <section class="content">
+    <h2>Frequently asked questions</h2>
+    <div class="faqs">{faqs.map((f) => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}</div>
+  </section>
+
+  <script>
+    import * as pdfjsLib from "pdfjs-dist";
+    import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+    pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+
+    const $ = (id) => document.getElementById(id);
+    const dropzone = $("dropzone"), fileInput = $("fileInput"), pagesEl = $("pages");
+    const status = $("status"), bar = $("bar"), count = $("count");
+    let rendered = []; // { num, dataUrl }
+
+    $("pickBtn").addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+    ["dragenter","dragover"].forEach((ev) => dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add("over"); }));
+    ["dragleave","drop"].forEach((ev) => dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.remove("over"); }));
+    dropzone.addEventListener("drop", (e) => { const f = [...e.dataTransfer.files].find((x) => x.type === "application/pdf"); if (f) handleFile(f); });
+    $("downloadAll").addEventListener("click", () => { rendered.forEach((p, i) => setTimeout(() => download(p), i * 250)); });
+
+    function download(p) {
+      const a = document.createElement("a");
+      a.href = p.dataUrl; a.download = "page-" + p.num + ".png";
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    async function handleFile(file) {
+      rendered = []; pagesEl.innerHTML = ""; bar.hidden = true;
+      status.textContent = "Rendering pages…";
+      try {
+        const data = new Uint8Array(await file.arrayBuffer());
+        const pdf = await pdfjsLib.getDocument({ data }).promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 2 });
+          const canvas = document.createElement("canvas");
+          canvas.width = viewport.width; canvas.height = viewport.height;
+          await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+          const dataUrl = canvas.toDataURL("image/png");
+          const item = { num: i, dataUrl };
+          rendered.push(item);
+          addThumb(item);
+          status.textContent = "Rendering pages… (" + i + "/" + pdf.numPages + ")";
+        }
+        status.textContent = "✓ " + pdf.numPages + (pdf.numPages === 1 ? " page" : " pages") + " ready";
+        count.textContent = pdf.numPages + (pdf.numPages === 1 ? " page" : " pages");
+        bar.hidden = false;
+      } catch (err) {
+        status.textContent = "Could not read that PDF. Please try another file.";
+      }
+    }
+
+    function addThumb(item) {
+      const card = document.createElement("div");
+      card.className = "thumb pdfthumb";
+      card.innerHTML = '<img src="' + item.dataUrl + '" alt="Page ' + item.num + '" /><span class="num">' + item.num + '</span><button class="dl" title="Download PNG">↓</button>';
+      card.querySelector(".dl").addEventListener("click", () => download(item));
+      pagesEl.appendChild(card);
+    }
+  </script>
+
+  <style>
+    .card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; text-align: left; }
+    .dropzone { border: 2px dashed #d6cdf0; border-radius: 14px; padding: 2.4rem 1rem; text-align: center; transition: .18s; background: linear-gradient(#fff, #fdfcff); }
+    .dropzone.over { border-color: var(--accent); background: var(--soft); transform: scale(1.005); }
+    .dropzone .up { width: 42px; height: 42px; color: var(--accent); margin-bottom: .4rem; }
+    .dz-title { font-weight: 700; font-size: 1.05rem; margin: 0; }
+    .dropzone .muted { color: var(--muted); margin: .35rem 0 .8rem; font-size: .92rem; }
+    .status { text-align: center; color: var(--muted); min-height: 1.3em; margin: 1rem 0 0; font-size: .92rem; }
+    .bar { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0 .25rem; }
+    .count { font-weight: 700; font-size: .9rem; }
+    .thumbs { display: flex; flex-wrap: wrap; gap: .7rem; margin: .6rem 0; }
+    .thumb { position: relative; width: 110px; height: 140px; border-radius: 11px; overflow: hidden; border: 1px solid var(--line); background: #fafafa; }
+    .thumb img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fff; }
+    .thumb .num { position: absolute; left: 5px; top: 5px; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 800; padding: 1px 7px; border-radius: 7px; }
+    .thumb .dl { position: absolute; right: 5px; bottom: 5px; width: 26px; height: 26px; border: none; border-radius: 8px; background: var(--accent); color: #fff; font-size: 1rem; line-height: 1; cursor: pointer; }
+    .btn-secondary { background: #fff; border: 1px solid var(--accent); color: var(--accent); padding: .45rem 1rem; border-radius: 9px; font-weight: 700; cursor: pointer; font-size: .9rem; }
+  </style>
+</Base>
